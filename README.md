@@ -1,4 +1,4 @@
-*# Assembler
+# Assembler
 
 Solution for the [Factory IO](https://factoryio.com/) assembler [scene](https://youtu.be/IC7GJVJ_QlA). Done in [twincat 3](https://www.beckhoff.com/en-en/support/download-finder/software-and-tools/) with structured text.
 

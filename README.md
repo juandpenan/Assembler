@@ -13,6 +13,11 @@ In order to connect twincat with factory io the OPC-UA protocol can be used, to 
 
 # I/O Conections 
 To connect the variables declared in twincat 3 with the factoryIO sensors and actuators you must follow the next image.
-[IO]()
+<p align="center">
+  <img src="https://github.com/juandpenan/Assembler/blob/main/Screenshots/Inputs-Outputs.PNG?raw=true"/>
+</p>
+
+
+
          
 

@@ -19,5 +19,7 @@ To connect the variables declared in twincat 3 with the factoryIO sensors and ac
 
 
 
+
+
          
 

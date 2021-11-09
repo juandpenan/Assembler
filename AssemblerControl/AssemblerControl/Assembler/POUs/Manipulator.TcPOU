@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <POU Name="Manipulator" Id="{126a1d86-8bce-428c-849c-2af7c63ae827}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM Manipulator
+VAR
+	ZManipulatorMovement: RS;
+	ManipulatorMovingZTrig: F_TRIG;
+	CompleteSequenceOfXCounter: CTU;
+	ManipulatorMovingXTrig: F_TRIG;
+	XManipulatorMovement: RS;
+	
+	CompleteSequenceOfZCounter: CTU;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[ManipulatorMovingZTrig(CLK:=gvl.IsManipulatorMvoingZ , Q=> );
+ManipulatorMovingXTrig(CLK:=gvl.IsManipulatorMovingX , Q=> );	
+CompleteSequenceOfXCounter(
+	CU:=ManipulatorMovingXTrig.Q , 
+	RESET:= (gvl.IsBaseClamped AND gvl.IsLidClamped) OR gvl.ResetAfterEmergency , 
+	PV:=3 , 
+	Q=> , 
+	CV=> );
+CompleteSequenceOfZCounter(
+	CU:=ManipulatorMovingZTrig.Q , 
+	RESET:= gvl.IsProductLeaving OR gvl.ResetAfterEmergency , 
+	PV:=2 , 
+	Q=> , 
+	CV=> );
+CASE  GVL.CurrentRobotState OF
+	ManipulatorStates.WaitingToStart:
+	gvl.ManipulatorXMotor:=FALSE;
+	gvl.ManipulatorGrabMotor:=FALSE;
+	gvl.ManipulatorZMotor:=FALSE;
+	ManipulatorStates.WaitingForALid:
+	
+	gvl.ManipulatorGrabMotor:=FALSE;
+	gvl.ManipulatorZMotor:=FALSE;
+	IF gvl.IsBaseClamped AND gvl.IsLidClamped THEN
+		GVL.CurrentRobotState:=ManipulatorStates.Pciking;
+	END_IF
+	ManipulatorStates.Pciking:
+	
+	IF  gvl.IsManipulatorDectectingAnObject THEN
+		Gvl.ManipulatorGrabMotor:=TRUE;
+	END_IF
+		
+	ZManipulatorMovement(SET:=(gvl.IsBaseClamped AND gvl.IsLidClamped AND NOT CompleteSequenceOfXCounter.Q ) , RESET1:=(gvl.IsManipulatorDectectingAnObject OR ManipulatorMovingZTrig.Q)   , Q1=>gvl.ManipulatorZMotor) ;
+	gvl.LidClampMotor:=ZManipulatorMovement.Q1;
+	IF ManipulatorMovingZTrig.Q THEN
+		Gvl.LidClampMotor:=FALSE;
+		GVL.CurrentRobotState:=ManipulatorStates.Placing;
+	END_IF
+	ManipulatorStates.Placing:
+	
+	XManipulatorMovement(SET:= gvl.IsBaseClamped , RESET1:=ManipulatorMovingXTrig.Q , Q1=>gvl.ManipulatorXMotor );
+	ZManipulatorMovement(SET:=CompleteSequenceOfXCounter.CV=1 , RESET1:=CompleteSequenceOfZCounter.CV=2  , Q1=>gvl.ManipulatorZMotor) ;
+	
+	IF CompleteSequenceOfZCounter.CV=2 THEN
+		gvl.CurrentBaseState:=BaseStates.Departure;
+		gvl.CurrentRobotState:=ManipulatorStates.WaitingForALid;		
+	END_IF
+	
+	ManipulatorStates.Stop:
+	gvl.ManipulatorXMotor:=FALSE;
+	gvl.ManipulatorGrabMotor:=FALSE;
+	gvl.ManipulatorZMotor:=FALSE;
+	
+END_CASE]]></ST>
+    </Implementation>
+    <LineIds Name="Manipulator">
+      <LineId Id="71" Count="0" />
+      <LineId Id="73" Count="0" />
+      <LineId Id="77" Count="4" />
+      <LineId Id="76" Count="0" />
+      <LineId Id="84" Count="4" />
+      <LineId Id="82" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="109" Count="0" />
+      <LineId Id="111" Count="1" />
+      <LineId Id="110" Count="0" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="8" Count="2" />
+      <LineId Id="12" Count="3" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="35" Count="1" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="46" Count="2" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="56" Count="0" />
+      <LineId Id="54" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="91" Count="2" />
+      <LineId Id="98" Count="0" />
+      <LineId Id="94" Count="0" />
+      <LineId Id="113" Count="1" />
+      <LineId Id="117" Count="1" />
+      <LineId Id="116" Count="0" />
+      <LineId Id="75" Count="0" />
+      <LineId Id="7" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

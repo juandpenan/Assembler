@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <POU Name="ControlPanel" Id="{d293cf6d-ff19-47fe-b382-d19e3c745654}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM ControlPanel
+VAR
+	
+	IsProductLeavingTrig: F_TRIG;
+	EmergencyTilt: TON;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IsProductLeavingTrig(CLK:=gvl.IsProductLeaving , Q=> );
+CASE gvl.CurrentControlPanelState OF 
+	
+	ControlPanelStates.WaitingToStart:
+	
+	gvl.StopLight:=FALSE;
+	gvl.StartLight:=FALSE;
+	gvl.ResetLight:=FALSE;
+	IF GVL.Start  THEN	
+	gvl.CurrentBaseState:=BaseStates.LocatingBaseInPlace;
+	gvl.CurrentLidsState:=LidStates.LocatingInPlace;
+	gvl.CurrentRobotState:=ManipulatorStates.WaitingForALid;
+	gvl.CurrentControlPanelState:=ControlPanelStates.Working;				
+		ELSIF NOT gvl.Stop  THEN
+			gvl.CurrentControlPanelState:=ControlPanelStates.Stopping;
+		ELSIF NOT gvl.EmergencyStop THEN
+			gvl.CurrentControlPanelState:=ControlPanelStates.Emergency;
+	END_IF
+	
+	ControlPanelStates.Working:
+	gvl.ResetAfterEmergency:=FALSE;
+	gvl.StopLight:=FALSE;
+	gvl.StartLight:=TRUE;
+	IF gvl.CountReset THEN
+		gvl.ResetLight:=TRUE;
+	END_IF
+	gvl.ResetLight:=FALSE;	
+	IF NOT gvl.Stop  THEN
+			gvl.CurrentControlPanelState:=ControlPanelStates.Stopping;
+		ELSIF NOT gvl.EmergencyStop THEN
+			gvl.CurrentControlPanelState:=ControlPanelStates.Emergency;	
+	END_IF
+	
+	ControlPanelStates.Stopping:
+	
+	IF IsProductLeavingTrig.Q THEN
+		gvl.CurrentBaseState:=BaseStates.Stop;
+		gvl.CurrentLidsState:=LidStates.Stop;
+		gvl.CurrentRobotState:=ManipulatorStates.Stop;
+	ELSE
+		// Waits for the product to be finished
+	END_IF
+	gvl.StartLight:=FALSE;
+	gvl.StopLight:=TRUE;
+	IF gvl.Start THEN
+		gvl.CurrentBaseState:=BaseStates.LocatingBaseInPlace;
+		gvl.CurrentLidsState:=LidStates.LocatingInPlace;
+		gvl.CurrentRobotState:=ManipulatorStates.WaitingForALid;
+		gvl.CurrentControlPanelState:=ControlPanelStates.Working;	
+		ELSIF not gvl.EmergencyStop THEN
+			gvl.CurrentControlPanelState:=ControlPanelStates.Emergency;	
+	END_IF
+	
+	ControlPanelStates.Emergency:
+	
+	gvl.CurrentBaseState:=BaseStates.Stop;
+	gvl.CurrentLidsState:=LidStates.Stop;
+	gvl.CurrentRobotState:=ManipulatorStates.Stop;
+	gvl.StartLight:=FALSE;
+	EmergencyTilt(IN:=NOT EmergencyTilt.Q , PT:=T#0.5S , Q=>gvl.StopLight , ET=> );
+	IF gvl.Start AND gvl.EmergencyStop THEN
+		gvl.CurrentBaseState:=BaseStates.LocatingBaseInPlace;
+		gvl.CurrentLidsState:=LidStates.LocatingInPlace;
+		gvl.CurrentRobotState:=ManipulatorStates.WaitingForALid;
+		gvl.CurrentControlPanelState:=ControlPanelStates.Working;
+		gvl.ResetAfterEmergency:=TRUE;
+	END_IF
+		
+END_CASE]]></ST>
+    </Implementation>
+    <LineIds Name="ControlPanel">
+      <LineId Id="5" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="70" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="71" Count="0" />
+      <LineId Id="53" Count="2" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="85" Count="1" />
+      <LineId Id="84" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="31" Count="1" />
+      <LineId Id="34" Count="1" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="72" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="73" Count="0" />
+      <LineId Id="97" Count="0" />
+      <LineId Id="25" Count="4" />
+      <LineId Id="42" Count="3" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="74" Count="0" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="56" Count="1" />
+      <LineId Id="49" Count="0" />
+      <LineId Id="51" Count="1" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="37" Count="1" />
+      <LineId Id="77" Count="0" />
+      <LineId Id="88" Count="2" />
+      <LineId Id="87" Count="0" />
+      <LineId Id="80" Count="1" />
+      <LineId Id="76" Count="0" />
+      <LineId Id="75" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="63" Count="0" />
+      <LineId Id="59" Count="1" />
+      <LineId Id="58" Count="0" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="64" Count="0" />
+      <LineId Id="66" Count="0" />
+      <LineId Id="92" Count="2" />
+      <LineId Id="91" Count="0" />
+      <LineId Id="68" Count="1" />
+      <LineId Id="8" Count="1" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

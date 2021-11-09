@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <POU Name="Lids" Id="{13374413-e6f4-437b-92d8-ee07c26b3b51}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM Lids
+VAR
+	
+	IsLidAtPlaceTrig: F_TRIG;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[CASE gvl.CurrentLidsState OF
+	LidStates.WaitingToStart:
+	gvl.LidClamperRiserMotor:=FALSE;
+	gvl.LidClampMotor:=FALSE;
+	GVL.LidConveyorMotor:=FALSE;
+	LidStates.LocatingInPlace:
+	gvl.LidConveyorMotor:=TRUE;
+	IsLidAtPlaceTrig(CLK:=gvl.IsLidAtPlace , Q=> );
+	
+	IF 	IsLidAtPlaceTrig.Q THEN
+		gvl.LidConveyorMotor:=FALSE;
+		gvl.LidClampMotor:=TRUE;
+		gvl.CurrentLidsState:=LidStates.PickingAndPlacing;
+	END_IF
+	LidStates.PickingAndPlacing:
+	
+	IF gvl.IsBaseAtPlace THEN
+		gvl.CurrentLidsState:=LidStates.LocatingInPlace;
+	END_IF
+	
+	LidStates.Stop:
+	
+	gvl.LidClamperRiserMotor:=FALSE;
+	gvl.LidClampMotor:=FALSE;
+	GVL.LidConveyorMotor:=FALSE;
+	
+	
+END_CASE]]></ST>
+    </Implementation>
+    <LineIds Name="Lids">
+      <LineId Id="7" Count="0" />
+      <LineId Id="84" Count="3" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="68" Count="1" />
+      <LineId Id="74" Count="0" />
+      <LineId Id="70" Count="3" />
+      <LineId Id="67" Count="0" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="88" Count="0" />
+      <LineId Id="76" Count="2" />
+      <LineId Id="89" Count="1" />
+      <LineId Id="94" Count="0" />
+      <LineId Id="92" Count="1" />
+      <LineId Id="91" Count="0" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

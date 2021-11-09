@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <DUT Name="ControlPanelStates" Id="{44f782a2-e53b-40dd-97e5-3e2a5639c0cb}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE ControlPanelStates :
+(
+	WaitingToStart,Working,Stopping,Emergency
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

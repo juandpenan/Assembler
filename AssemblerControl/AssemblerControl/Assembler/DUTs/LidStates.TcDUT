@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <DUT Name="LidStates" Id="{25e30745-b4d0-4d1c-b608-0bbd938cff1c}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE LidStates :
+(
+	WaitingToStart,LocatingInPlace,PickingAndPlacing,Stop
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

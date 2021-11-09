@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <POU Name="Bases" Id="{ecc8eaa3-1bb0-4d5e-b4c7-b52ecb356e84}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM Bases
+VAR
+	
+	
+	
+	
+	IsBaseAtPlaceTrig: F_TRIG;
+	IsProductLeavingTrig: F_TRIG;
+	RiserFunctionality: RS;
+	IsBasesClamperRiserAtLimitTrig: R_TRIG;
+	TotalFinalProducts: CTU;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IsProductLeavingTrig(CLK:=gvl.IsProductLeaving , Q=> );
+IsBaseAtPlaceTrig(CLK:=gvl.IsBaseAtPlace , Q=> );
+IsBasesClamperRiserAtLimitTrig(CLK:=gvl.IsBasesClamperRiserAtLimit , Q=> );
+TotalFinalProducts(
+	CU:=IsProductLeavingTrig.Q , 
+	RESET:=gvl.CountReset, 
+	PV:= 1000, 
+	Q=> , 
+	CV=>gvl.ProductCounter );
+CASE gvl.CurrentBaseState OF
+	BaseStates.WaitingToStart:
+	
+	gvl.BaseConveyorMotor:=FALSE;
+	gvl.BasesClamperRiserMotor:=FALSE;
+	gvl.BasesClampMotor:=FALSE;
+
+	BaseStates.LocatingBaseInPlace:
+	gvl.BaseConveyorMotor:=TRUE;
+	
+	IF 	IsBaseAtPlaceTrig.Q THEN
+		gvl.BaseConveyorMotor:=FALSE;
+		gvl.BasesClampMotor:=TRUE;
+		gvl.CurrentBaseState:=BaseStates.WaitingToBeLidded;
+	END_IF
+	
+	BaseStates.Departure:
+	
+	RiserFunctionality(SET:=NOT gvl.IsManipulatorDectectingAnObject , RESET1:=(IsProductLeavingTrig.Q OR  gvl.IsManipulatorMovingX) , Q1=>gvl.BasesClamperRiserMotor );
+	GVL.BasesClampMotor:=FALSE;
+	IF  IsProductLeavingTrig.Q THEN
+	Gvl.ManipulatorXMotor:=FALSE ;
+	END_IF
+	gvl.BaseConveyorMotor:=TRUE;
+	IF IsProductLeavingTrig.Q THEN
+		gvl.CurrentBaseState:=BaseStates.LocatingBaseInPlace;
+	END_IF
+	
+	BaseStates.Stop:
+	
+	gvl.BaseConveyorMotor:=FALSE;
+	GVL.BasesClamperRiserMotor:=FALSE;
+	gvl.BasesClampMotor:=FALSE;
+	
+END_CASE]]></ST>
+    </Implementation>
+    <LineIds Name="Bases">
+      <LineId Id="64" Count="0" />
+      <LineId Id="109" Count="1" />
+      <LineId Id="132" Count="4" />
+      <LineId Id="130" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="137" Count="0" />
+      <LineId Id="141" Count="3" />
+      <LineId Id="140" Count="0" />
+      <LineId Id="61" Count="0" />
+      <LineId Id="89" Count="0" />
+      <LineId Id="95" Count="0" />
+      <LineId Id="97" Count="1" />
+      <LineId Id="101" Count="0" />
+      <LineId Id="100" Count="0" />
+      <LineId Id="99" Count="0" />
+      <LineId Id="162" Count="0" />
+      <LineId Id="102" Count="0" />
+      <LineId Id="163" Count="0" />
+      <LineId Id="107" Count="0" />
+      <LineId Id="103" Count="0" />
+      <LineId Id="117" Count="0" />
+      <LineId Id="104" Count="0" />
+      <LineId Id="118" Count="0" />
+      <LineId Id="105" Count="0" />
+      <LineId Id="112" Count="2" />
+      <LineId Id="145" Count="1" />
+      <LineId Id="149" Count="0" />
+      <LineId Id="80" Count="0" />
+      <LineId Id="147" Count="1" />
+      <LineId Id="59" Count="1" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <DUT Name="BaseStates" Id="{2fd6bbd1-d6b6-4686-8bd3-e01266c37a55}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE BaseStates :
+(
+	WaitingToStart,LocatingBaseInPlace,WaitingToBeLidded,Departure,Stop
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

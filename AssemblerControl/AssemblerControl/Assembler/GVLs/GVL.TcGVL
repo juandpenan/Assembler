@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <GVL Name="GVL" Id="{1c8abc4c-cbae-4a43-ae58-e035ec62bcd7}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+VAR_GLOBAL
+	//INPUTS
+	{attribute'OPC.UA.DA':='1'}
+	IsManipulatorMovingX:BOOL;
+	{attribute'OPC.UA.DA':='1'}
+	IsManipulatorMvoingZ:BOOL;
+	{attribute'OPC.UA.DA':='1'}
+	IsManipulatorDectectingAnObject:BOOL;
+	{attribute'OPC.UA.DA':='1'}
+	IsLidClamped:BOOL;
+	{attribute'OPC.UA.DA':='1'}
+	IsBaseClamped:BOOL;
+	{attribute'OPC.UA.DA':='1'}
+	IsLidAtPlace:BOOL;
+	{attribute'OPC.UA.DA':='1'}
+	IsBaseAtPlace:BOOL;
+	{attribute'OPC.UA.DA':='1'}
+	IsProductLeaving:BOOL;
+	{attribute'OPC.UA.DA':='1'}
+	IsBasesClamperRiserAtLimit:BOOL;
+	{attribute'OPC.UA.DA':='1'}
+	IsLidsClamperRiserAtLimit:BOOL;
+	{attribute'OPC.UA.DA':='1'}
+	EmergencyStop:BOOL;
+	{attribute'OPC.UA.DA':='1'}
+	Start:BOOL;
+	{attribute'OPC.UA.DA':='1'}
+	CountReset:BOOL;
+	{attribute'OPC.UA.DA':='1'}
+	Stop:BOOL;
+	//OUTPUTS
+	{attribute'OPC.UA.DA':='1'}{attribute'OPC.UA.DA':='1'}
+	ManipulatorXMotor:BOOL;
+	{attribute'OPC.UA.DA':='1'}{attribute'OPC.UA.DA':='1'}
+	ManipulatorZMotor:BOOL;
+	{attribute'OPC.UA.DA':='1'}{attribute'OPC.UA.DA':='1'}
+	ManipulatorGrabMotor:BOOL;
+	{attribute'OPC.UA.DA':='1'}
+	LidConveyorMotor:BOOL;
+	{attribute'OPC.UA.DA':='1'}
+	BaseConveyorMotor:BOOL;
+	{attribute'OPC.UA.DA':='1'}
+	LidClampMotor:BOOL;
+	{attribute'OPC.UA.DA':='1'}
+	BasesClampMotor:BOOL;
+	{attribute'OPC.UA.DA':='1'}
+	BasesClamperRiserMotor:BOOL;
+	{attribute'OPC.UA.DA':='1'}
+	LidClamperRiserMotor:BOOL;
+	LidsEmitter:BOOL;
+	BasesEmitter:BOOL;
+	{attribute'OPC.UA.DA':='1'}
+	ProductCounter:INT;
+	{attribute'OPC.UA.DA':='1'}
+	StartLight:BOOL;
+	{attribute'OPC.UA.DA':='1'}
+	StopLight:BOOL;
+	{attribute'OPC.UA.DA':='1'}
+	ResetLight:BOOL;
+	//STATES
+	CurrentBaseState:INT;
+	CurrentRobotState:INT;
+	CurrentLidsState:INT;
+	CurrentControlPanelState:INT;
+	ResetAfterEmergency:bool;
+END_VAR]]></Declaration>
+  </GVL>
+</TcPlcObject>
